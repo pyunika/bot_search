@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket io chat</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+
+    <body>
+    <section id="module">
+      <header id="top-bar">
+        <h1><center> Search Bot </center></h1>
+      </header>
+
+      <ul id="conversation">
+        <li id="que"></li>
+        <!--<div id="left" style="float: left; width: 50%">  </div>
+        <div id="right" style="float: right; width: 50%"></div>-->
+        <li id="results"></li>
+      </ul>
+
+
+    </section>
+    <!--<ul id="messages"></ul>-->
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript" src="details.js"></script>
+    <script>
+      var socket = io();
+      $('form').submit(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+      });
+
+      socket.on('query', function(res) {
+        $($('<li id="q1"/>').text('Query: '+res).appendTo('#que')).appendTo('#conversation');
+      });
+
+      socket.on('result', function(msg){
+        var jsondata=JSON.parse(msg);
+        for(var i=0;i<msg.length-3;i++) {
+          var fname = jsondata.data.persons[i].fname;
+          var lname = jsondata.data.persons[i].lname;
+          var personId = jsondata.data.persons[i].personId;
+          $($('<li id="addedDiv_num' + i + '" name="'+personId+'" value="'+fname+'"/>').text(fname + ' ' + lname).appendTo('#results').click(function(){ myFunction($(this).attr("name"));})).appendTo('#conversation');
+
+          $("#addedDiv_num + i").click(myFunction);
+        }
+        function myFunction(name){
+          //search(name,name,name);
+          details(name);
+          // alert(name);
+        }
+      });
+    </script>
+    </body>
+</html>
