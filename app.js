@@ -7,9 +7,11 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var ser = require('./server.js');
 
 var app = express();
-
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -31,7 +33,9 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
+global.io=io;
+ser.nav();
+console.log("hi");
 // error handlers
 
 // development error handler
@@ -55,6 +59,8 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+
 
 
 module.exports = app;
